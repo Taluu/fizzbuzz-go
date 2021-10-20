@@ -64,7 +64,7 @@ func fizzbuzzHandler(w http.ResponseWriter, r *http.Request) {
 	fizzbuzz := Fizzbuzz(request.Int1, request.Int2, request.Limit, request.Str1, request.Str2)
 
 	result := struct {
-		Fizzbuzz string `json:"fizzbuzz"`
+		Fizzbuzz []string `json:"fizzbuzz"`
 	}{
 		Fizzbuzz: fizzbuzz,
 	}

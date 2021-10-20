@@ -56,7 +56,7 @@ func TestFizzbuzzOK(t *testing.T) {
 	type test struct {
 		name     string
 		body     io.Reader
-		expected string
+		expected []string
 	}
 
 	tests := []test{
@@ -81,14 +81,16 @@ func TestFizzbuzzOK(t *testing.T) {
 		}
 
 		result := struct {
-			Fizzbuzz string `json:"fizzbuzz"`
+			Fizzbuzz []string `json:"fizzbuzz"`
 		}{}
 
 		decoder := json.NewDecoder(resp.Body)
 		decoder.Decode(&result)
 
-		if result.Fizzbuzz != tc.expected {
-			t.Fatalf("%s :: Expected a correct fizzbuzz return, got %s", tc.name, result.Fizzbuzz)
+		for k, v := range result.Fizzbuzz {
+			if v != tc.expected[k] {
+				t.Fatalf("%s :: Expected a correct fizzbuzz return, got %s", tc.name, result.Fizzbuzz)
+			}
 		}
 	}
 }

@@ -14,22 +14,28 @@ func TestFizzbuzz(t *testing.T) {
 	type test struct {
 		name  string
 		input input
-		want  string
+		want  []string
 	}
 
 	tests := []test{
-		{name: "classic fizzbuzz", input: input{int1: 2, int2: 3, limit: 7, str1: "fizz", str2: "buzz"}, want: "1,fizz,buzz,fizz,5,fizzbuzz,7"},
-		{name: "classic foobar with different terms", input: input{int1: 2, int2: 3, limit: 7, str1: "foo", str2: "bar"}, want: "1,foo,bar,foo,5,foobar,7"},
-		{name: "same term str1 and str2", input: input{int1: 2, int2: 3, limit: 7, str1: "fizz", str2: "fizz"}, want: "1,fizz,fizz,fizz,5,fizzfizz,7"},
-		{name: "same multiples int1 and int2", input: input{int1: 2, int2: 2, limit: 5, str1: "fizz", str2: "buzz"}, want: "1,fizzbuzz,3,fizzbuzz,5"},
-		{name: "empty strings", input: input{int1: 2, int2: 3, limit: 7, str1: "fizz", str2: ""}, want: "1,fizz,,fizz,5,fizz,7"},
+		{name: "classic fizzbuzz", input: input{int1: 2, int2: 3, limit: 7, str1: "fizz", str2: "buzz"}, want: []string{"1", "fizz", "buzz", "fizz", "5", "fizzbuzz", "7"}},
+		{name: "classic foobar with different terms", input: input{int1: 2, int2: 3, limit: 7, str1: "foo", str2: "bar"}, want: []string{"1", "foo", "bar", "foo", "5", "foobar", "7"}},
+		{name: "same term str1 and str2", input: input{int1: 2, int2: 3, limit: 7, str1: "fizz", str2: "fizz"}, want: []string{"1", "fizz", "fizz", "fizz", "5", "fizzfizz", "7"}},
+		{name: "same multiples int1 and int2", input: input{int1: 2, int2: 2, limit: 5, str1: "fizz", str2: "buzz"}, want: []string{"1", "fizzbuzz", "3", "fizzbuzz", "5"}},
+		{name: "empty strings", input: input{int1: 2, int2: 3, limit: 7, str1: "fizz", str2: ""}, want: []string{"1", "fizz", "", "fizz", "5", "fizz", "7"}},
 	}
 
 	for _, tc := range tests {
 		got := Fizzbuzz(tc.input.int1, tc.input.int2, tc.input.limit, tc.input.str1, tc.input.str2)
 
-		if got != tc.want {
-			t.Fatalf("%s :: Expected \"%s\", got \"%s\"", tc.name, tc.want, got)
+		if len(got) != len(tc.want) {
+			t.Fatalf("%s :: Expected a result of size %d, had %d", tc.name, len(tc.want), len(got))
+		}
+
+		for k, v := range got {
+			if v != tc.want[k] {
+				t.Fatalf("%s :: Expected \"%s\", got \"%s\"", tc.name, tc.want, got)
+			}
 		}
 	}
 }
