@@ -9,6 +9,7 @@ import (
 
 func main() {
 	http.HandleFunc("/fizzbuzz", fizzbuzzHandler)
+	http.HandleFunc("/stats", statsHandler)
 
 	host := flag.String("host", "localhost", "Set the host")
 	port := flag.Uint("port", 8080, "The port to listen to")
