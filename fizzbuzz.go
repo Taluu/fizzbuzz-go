@@ -1,8 +1,6 @@
 package main
 
-import (
-	"strconv"
-)
+import "fmt"
 
 // Fizzbuzz prints all the ints between 1 and limit, replacing multiples of int1 with str1,
 // multiples of int2 with str2, multiples of int1 and int2 with str1str2.
@@ -21,7 +19,7 @@ func Fizzbuzz(int1 uint, int2 uint, limit uint, str1 string, str2 string) []stri
 		}
 
 		if i%int1 != 0 && i%int2 != 0 {
-			j = strconv.FormatUint(uint64(i), 10)
+			j = fmt.Sprint(i)
 		}
 
 		result = append(result, j)

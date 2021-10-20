@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"sort"
-	"sync"
 )
 
 type fizzbuzzRequest struct {
@@ -15,18 +13,6 @@ type fizzbuzzRequest struct {
 	Limit uint   `json:"limit"`
 	Str1  string `json:"str1"`
 	Str2  string `json:"str2"`
-}
-
-var stats = struct {
-	sync.Mutex
-	counter map[fizzbuzzRequest]uint
-}{
-	counter: make(map[fizzbuzzRequest]uint),
-}
-
-type statistic struct {
-	Request fizzbuzzRequest `json:"request"`
-	Counter uint            `json:"counter"`
 }
 
 func fizzbuzzHandler(w http.ResponseWriter, r *http.Request) {
@@ -72,39 +58,9 @@ func fizzbuzzHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(result)
 
-	stats.Lock()
-	stats.counter[request]++
-	stats.Unlock()
+	stats.Incr(request)
 
 	fmt.Printf("HTTP POST /fizzbuzz : 200\n")
-}
-
-func statsHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Println()
-
-	stats.Lock()
-
-	statistics := make([]statistic, 0, len(stats.counter))
-
-	for request, counter := range stats.counter {
-		statistics = append(statistics, statistic{Request: request, Counter: counter})
-	}
-
-	stats.Unlock()
-
-	sort.Slice(statistics, func(i, j int) bool {
-		if statistics[i].Counter == statistics[j].Counter {
-			return i < j
-		}
-
-		return statistics[i].Counter > statistics[j].Counter
-	})
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(statistics)
-
-	fmt.Printf("HTTP GET /stats : 200\n")
 }
 
 func jsonError(w http.ResponseWriter, error string, code int) {
