@@ -25,13 +25,13 @@ func (s *requestCounter) Incr(request fizzbuzzRequest) {
 	s.counter[request]++
 }
 
-func (s *requestCounter) Format() []statistic {
+func (s *requestCounter) MarshalJSON() ([]byte, error) {
 	s.Lock()
 	defer s.Unlock()
 
 	statistics := make([]statistic, 0, len(s.counter))
 
-	for request, counter := range stats.counter {
+	for request, counter := range s.counter {
 		statistics = append(statistics, statistic{Request: request, Counter: counter})
 	}
 
@@ -43,7 +43,7 @@ func (s *requestCounter) Format() []statistic {
 		return statistics[i].Counter > statistics[j].Counter
 	})
 
-	return statistics
+	return json.Marshal(statistics)
 }
 
 func (s *requestCounter) Clear() {
@@ -62,7 +62,7 @@ func statsHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println()
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(stats.Format())
+	json.NewEncoder(w).Encode(&stats)
 
 	fmt.Printf("HTTP GET /stats : 200\n")
 }
